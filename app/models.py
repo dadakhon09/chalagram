@@ -9,7 +9,6 @@ from django.utils.text import slugify
 
 class UserProfile(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE)
-    room_name = models.CharField(max_length=100)
     photo = models.ImageField(upload_to='', )
 
     def __str__(self):
