@@ -42,6 +42,7 @@ INSTALLED_APPS = [
     'rest_framework_swagger',
     'rest_framework',
     'rest_framework.authtoken',
+    'channels',
 
     'app',
 ]
@@ -103,6 +104,16 @@ TEMPLATES = [
 ]
 
 WSGI_APPLICATION = 'chalagram.wsgi.application'
+ASGI_APPLICATION = 'chalagram.routing.application'
+
+CHANNEL_LAYERS = {
+    'default': {
+        'BACKEND': 'channels_redis.core.RedisChannelLayer',
+        'CONFIG': {
+            "hosts": [('127.0.0.1', 6379)],
+        },
+    },
+}
 
 
 # Database

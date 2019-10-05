@@ -15,5 +15,5 @@ class UserProfileSerializer(ModelSerializer):
 
     class Meta:
         model = UserProfile
-        fields = ('user', 'photo')
+        fields = ('user', 'photo', 'room_name')
 

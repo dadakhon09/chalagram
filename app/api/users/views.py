@@ -2,10 +2,12 @@ from django.contrib.auth import authenticate
 from rest_framework.authtoken.models import Token
 from django.contrib.auth.models import User
 from rest_framework.decorators import permission_classes
+from rest_framework.generics import ListAPIView
 from rest_framework.permissions import IsAdminUser, AllowAny, IsAuthenticated
 from rest_framework.response import Response
 from rest_framework.views import APIView
 
+from app.api.users.serializers import UserProfileSerializer
 from app.models import UserProfile
 
 
@@ -51,4 +53,16 @@ class UserLogout(APIView):
         else:
             Response("Please login first")
         return Response("Successfully logged out")
+
+
+class UserListAll(ListAPIView):
+    serializer_class = UserProfileSerializer
+    queryset = UserProfile.objects.all()
+
+
+class UserListExceptOne(ListAPIView):
+    serializer_class = UserProfileSerializer
+
+    def get_queryset(self):
+        return UserProfile.objects.exclude(user__id=self.request.user.id)
 
