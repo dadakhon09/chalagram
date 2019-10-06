@@ -19,9 +19,9 @@ class UserProfileSerializer(ModelSerializer):
 
 
 class FriendshipSerializer(ModelSerializer):
-    userprofile = UserProfileSerializer()
+    # userprofile = UserProfileSerializer()
     friends = UserProfileSerializer()
 
     class Meta:
         model = Friendship
-        fields = ('userprofile', 'friends')
+        fields = ('friends', )
