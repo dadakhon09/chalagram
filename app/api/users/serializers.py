@@ -1,7 +1,7 @@
 from django.contrib.auth.models import User
 from rest_framework.serializers import ModelSerializer
 
-from app.models import UserProfile
+from app.models import UserProfile, Friendship
 
 
 class UserSerializer(ModelSerializer):
@@ -15,5 +15,13 @@ class UserProfileSerializer(ModelSerializer):
 
     class Meta:
         model = UserProfile
-        fields = ('user', 'photo', 'room_name')
+        fields = ('user', 'photo')
 
+
+class FriendshipSerializer(ModelSerializer):
+    userprofile = UserProfileSerializer()
+    friends = UserProfileSerializer()
+
+    class Meta:
+        model = Friendship
+        fields = ('userprofile', 'friends')

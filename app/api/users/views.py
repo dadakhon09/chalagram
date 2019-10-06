@@ -7,11 +7,11 @@ from rest_framework.permissions import IsAdminUser, AllowAny, IsAuthenticated
 from rest_framework.response import Response
 from rest_framework.views import APIView
 
-from app.api.users.serializers import UserProfileSerializer
-from app.models import UserProfile
+from app.api.users.serializers import UserProfileSerializer, FriendshipSerializer
+from app.models import UserProfile, Friendship
 
 
-# @permission_classes((IsAdminUser, IsAuthenticated))
+@permission_classes((AllowAny,))
 class UserRegister(APIView):
     def post(self, request):
         data = request.data
@@ -45,7 +45,6 @@ class UserLogin(APIView):
                          })
 
 
-# @permission_classes((IsAuthenticated,))
 class UserLogout(APIView):
     def get(self, request):
         if request.user:
@@ -66,3 +65,9 @@ class UserListExceptOne(ListAPIView):
     def get_queryset(self):
         return UserProfile.objects.exclude(user__id=self.request.user.id)
 
+
+class FriendsList(ListAPIView):
+    serializer_class = FriendshipSerializer
+
+    def get_queryset(self):
+        return Friendship.objects.filter(userprofile__user_id=self.request.user.id)

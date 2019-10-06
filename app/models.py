@@ -9,7 +9,7 @@ from django.utils.text import slugify
 
 class UserProfile(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE)
-    photo = models.ImageField(upload_to='', )
+    photo = models.ImageField(upload_to='', null=True, blank=True)
 
     def __str__(self):
         return self.user.username
@@ -18,12 +18,8 @@ class UserProfile(models.Model):
 @receiver(post_save, sender=User)
 def wtf(sender, instance, created, **kwargs):
     if created:
-        room_name = instance.username
-        if UserProfile.objects.filter(room_name=room_name).exists():
-            pass
-        else:
-            up = UserProfile(user=instance, room_name=room_name)
-            up.save()
+        up = UserProfile(user=instance)
+        up.save()
 
 
 class Room(models.Model):
@@ -54,9 +50,22 @@ class Message(models.Model):
 
 
 class UserRoom(models.Model):
-    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    userprofile = models.ForeignKey(UserProfile, on_delete=models.CASCADE)
     room_name = models.ForeignKey(Room, on_delete=models.CASCADE)
 
     class Meta:
         ordering = ['id']
         db_table = 'user_rooms'
+
+
+class Friendship(models.Model):
+    userprofile = models.ForeignKey(UserProfile, on_delete=models.CASCADE)
+    friends = models.ForeignKey(UserProfile, on_delete=models.CASCADE, related_name='friends')
+    created = models.DateTimeField(auto_now_add=True)
+
+    class Meta:
+        ordering = ['id']
+        db_table = 'friendship'
+
+    def __str__(self):
+        return f'{self.userprofile}<->{self.friends}'
