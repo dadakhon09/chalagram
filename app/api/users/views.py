@@ -2,12 +2,12 @@ from django.contrib.auth import authenticate
 from rest_framework.authtoken.models import Token
 from django.contrib.auth.models import User
 from rest_framework.decorators import permission_classes
-from rest_framework.generics import ListAPIView
+from rest_framework.generics import ListAPIView, CreateAPIView
 from rest_framework.permissions import IsAdminUser, AllowAny, IsAuthenticated
 from rest_framework.response import Response
 from rest_framework.views import APIView
 
-from app.api.users.serializers import UserProfileSerializer, FriendshipSerializer
+from app.api.users.serializers import UserProfileSerializer, FriendshipSerializer, FriendshipCreateSerializer
 from app.models import UserProfile, Friendship
 
 
@@ -71,3 +71,7 @@ class FriendsList(ListAPIView):
 
     def get_queryset(self):
         return Friendship.objects.filter(userprofile__user_id=self.request.user.id)
+
+
+class AddFriend(CreateAPIView):
+    serializer_class = FriendshipCreateSerializer
