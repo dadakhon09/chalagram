@@ -1,6 +1,9 @@
 from django.urls import path
 
-from app.api.users.views import UserRegister, UserLogin, UserLogout, UserListAll, UserListExceptOne, FriendsList, AddFriend
+from app.api.consumers.views import MessagesList
+from app.api.users.views import UserRegister, UserLogin, UserLogout, UserListAll, UserListExceptOne, FriendsList, \
+    AddFriend
+
 
 urlpatterns = [
     path('register/', UserRegister.as_view(), name='register'),
@@ -11,4 +14,5 @@ urlpatterns = [
     path('users/my/', UserListExceptOne.as_view(), name='users-my'),
     path('friends/list/', FriendsList.as_view(), name='friend-list'),
     path('add/friend/', AddFriend.as_view(), name='add-friend'),
+    path('messages/list/<str:room_name>/', MessagesList.as_view(), name='messages-list'),
 ]

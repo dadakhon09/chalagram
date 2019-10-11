@@ -19,12 +19,14 @@ from django.contrib import admin
 from django.urls import path, include
 from rest_framework_swagger.views import get_swagger_view
 
+from app.api.core.views import Index
 
 schema_view = get_swagger_view(title='Documentation')
 
 
 urlpatterns = [
-    path('', schema_view, name='scheme'),
+    path('doc/', schema_view, name='scheme'),
+    path('', Index.as_view(), name='index'),
     path('api/', include('app.api.urls')),
     path('admin/', admin.site.urls),
 ]

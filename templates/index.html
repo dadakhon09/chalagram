@@ -8,9 +8,51 @@
     <title>Document</title>
 </head>
 <body>
-    <h1>IWLADI</h1>
+<input type="text" id="chat-message-input">
+<input type="submit" id="chat-message-submit">
 </body>
+
 <script>
 
+    document.querySelector('#chat-message-input').focus();
+
+
+
+    let sender = {{ sender }};
+    let receiver = {{ receiver }};
+
+    let chatSocket = new WebSocket(
+        'ws://' + window.location.host +
+        '/ws/chat/' + 'room' + '/');
+
+    chatSocket.onmessage = function (e) {
+        console.log(e.data);
+    };
+
+    chatSocket.onopen = function (e) {
+        console.log('onopen');
+    };
+
+    chatSocket.onclose = function (e) {
+        console.error('Chat socket closed unexpectedly');
+    };
+
+    document.querySelector('#chat-message-submit').onclick = function (e) {
+        let messageInputDom = document.querySelector('#chat-message-input');
+        let message = messageInputDom.value;
+
+        if (message !== '') {
+            chatSocket.send(JSON.stringify({
+                'message': message,
+                'sender': sender,
+                'receiver': receiver,
+            }));
+        }
+
+        document.querySelector('#chat-message-input').focus();
+
+        messageInputDom.value = '';
+    };
 </script>
+
 </html>

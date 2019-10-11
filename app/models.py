@@ -55,6 +55,9 @@ class UserRoom(models.Model):
         ordering = ['id']
         db_table = 'user_rooms'
 
+    def __str__(self):
+        return self.room_name
+
 
 class Friendship(models.Model):
     userprofile = models.ForeignKey(UserProfile, on_delete=models.CASCADE)
