@@ -7,3 +7,4 @@ class MessageSerializer(ModelSerializer):
     class Meta:
         model = Message
         fields = ('message', 'room', 'sender', 'receiver', 'created')
+

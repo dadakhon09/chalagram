@@ -48,6 +48,7 @@ class ChatConsumer(WebsocketConsumer):
                 'message': message,
                 'sender': sender.username,
                 'receiver': receiver.username,
+                'room_name': self.room_name,
             }
         )
 
@@ -56,10 +57,12 @@ class ChatConsumer(WebsocketConsumer):
         message = event['message']
         sender = event['sender']
         receiver = event['receiver']
+        room_name = event['room_name']
 
         # Send message to WebSocket
         self.send(text_data=json.dumps({
             'message': message,
             'sender': sender,
             'receiver': receiver,
+            'room_name': room_name,
         }))

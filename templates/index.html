@@ -17,13 +17,13 @@
     document.querySelector('#chat-message-input').focus();
 
 
-
     let sender = {{ sender }};
     let receiver = {{ receiver }};
+    let room_name = "{{ room_name }}";
 
     let chatSocket = new WebSocket(
         'ws://' + window.location.host +
-        '/ws/chat/' + 'room' + '/');
+        '/ws/chat/' + room_name + '/');
 
     chatSocket.onmessage = function (e) {
         console.log(e.data);
@@ -46,6 +46,7 @@
                 'message': message,
                 'sender': sender,
                 'receiver': receiver,
+                'room_name': room_name,
             }));
         }
 

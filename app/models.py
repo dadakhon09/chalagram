@@ -56,7 +56,7 @@ class UserRoom(models.Model):
         db_table = 'user_rooms'
 
     def __str__(self):
-        return self.room_name
+        return self.room_name.room_name
 
 
 class Friendship(models.Model):
