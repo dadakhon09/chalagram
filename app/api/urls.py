@@ -9,6 +9,6 @@ urlpatterns = [
 
     path('users/list/', UserListAll.as_view(), name='users-list'),
     path('users/my/', UserListExceptOne.as_view(), name='users-my'),
-    path('users/friends/', FriendsList.as_view(), name='friend-list'),
+    path('friends/list/', FriendsList.as_view(), name='friend-list'),
     path('add/friend/', AddFriend.as_view(), name='add-friend'),
 ]
