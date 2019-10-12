@@ -1,6 +1,6 @@
 from django.urls import path
 
-from app.api.consumers.views import MessagesList
+from app.api.consumers.views import MessagesList, CreateGroup
 from app.api.users.views import UserRegister, UserLogin, UserLogout, UserListAll, UserListExceptOne, FriendsList, \
     AddFriend
 
@@ -15,4 +15,5 @@ urlpatterns = [
     path('friends/list/', FriendsList.as_view(), name='friend-list'),
     path('add/friend/', AddFriend.as_view(), name='add-friend'),
     path('messages/list/<str:room_name>/', MessagesList.as_view(), name='messages-list'),
+    path('create/group/', CreateGroup.as_view(), name='create-group'),
 ]

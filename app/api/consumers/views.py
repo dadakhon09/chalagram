@@ -1,4 +1,5 @@
 from rest_framework.generics import ListAPIView, CreateAPIView
+from rest_framework.response import Response
 from rest_framework.views import APIView
 
 from app.api.consumers.serializers import MessageSerializer
@@ -17,4 +18,10 @@ class MessagesList(ListAPIView):
 class CreateGroup(APIView):
     def post(self, request):
         data = request.data
-        
+
+        userprofiles_list = []
+
+        for u in range(len(data)):
+            userprofiles_list.append(data['userprofile'])
+        print(userprofiles_list)
+        return Response(data)
