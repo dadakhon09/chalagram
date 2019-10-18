@@ -1,9 +1,13 @@
-from rest_framework.generics import ListAPIView, CreateAPIView
+from django.core.serializers import serialize
+from rest_framework.generics import ListAPIView, CreateAPIView, UpdateAPIView, DestroyAPIView, RetrieveDestroyAPIView, \
+    RetrieveUpdateAPIView
 from rest_framework.response import Response
 from rest_framework.views import APIView
 
-from app.api.consumers.serializers import MessageSerializer
-from app.models import Message, Room
+from app.api.consumers.serializers import MessageSerializer, MessageUpdateSerializer, RoomUpdateSerializer, \
+    RoomSerializer
+from app.api.users.serializers import UserProfileSerializer
+from app.models import Message, Room, UserProfile
 
 
 class MessagesList(ListAPIView):
@@ -15,13 +19,63 @@ class MessagesList(ListAPIView):
         return Message.objects.filter(room=room)
 
 
-class CreateGroup(APIView):
+class RoomsList(ListAPIView):
+    serializer_class = RoomSerializer
+    queryset = Room.objects.all()
+
+
+class CreateRoom(APIView):
     def post(self, request):
         data = request.data
 
-        userprofiles_list = []
+        userprofiles_list = UserProfile.objects.filter(id=-1)
 
-        for u in range(len(data)):
-            userprofiles_list.append(data['userprofile'])
-        print(userprofiles_list)
-        return Response(data)
+        users = self.request.POST.getlist('user')
+        room_name = self.request.POST.get('room_name')
+        room = Room(room_name=room_name)
+        room.save()
+
+        for u in users:
+            userprofiles_list |= UserProfile.objects.filter(user__username=u)
+            room.userprofiles.add(UserProfile.objects.filter(user__username=u).first())
+            room.save()
+
+        ser = UserProfileSerializer(userprofiles_list, many=True)
+
+        response = {'users': ser.data, 'room_name': room_name}
+
+        return Response(response)
+
+
+class MessageUpdate(RetrieveUpdateAPIView):
+    serializer_class = MessageUpdateSerializer
+    lookup_field = 'id'
+    queryset = Message.objects.all()
+
+
+class MessageDelete(RetrieveDestroyAPIView):
+    serializer_class = MessageSerializer
+    lookup_field = 'id'
+    queryset = Message.objects.all()
+
+
+class RoomUpdate(RetrieveUpdateAPIView):
+    serializer_class = RoomUpdateSerializer
+    lookup_field = 'id'
+    queryset = Room.objects.all()
+
+
+class RoomDelete(RetrieveDestroyAPIView):
+    serializer_class = RoomSerializer
+    lookup_field = 'id'
+    queryset = Room.objects.all()
+
+
+class ChatList(ListAPIView):
+    serializer_class = RoomSerializer
+
+    def get_queryset(self):
+        rooms = Room.objects.all()
+        for room in rooms:
+            print(room.userprofiles)
+        return Room.objects.filter()

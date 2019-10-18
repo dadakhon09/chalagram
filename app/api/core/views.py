@@ -8,6 +8,5 @@ from django.views import View
 class Index(View):
     def get(self, request):
         return render(request, 'index.html', {'sender': mark_safe(json.dumps(self.request.user.username)),
-                                              'receiver': 2,
                                               'room_name': 'room'
                                               })

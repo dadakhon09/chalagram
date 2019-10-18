@@ -4,7 +4,7 @@ import json
 
 from django.contrib.auth.models import User
 
-from app.models import Message, Room, UserRoom
+from app.models import Message, Room
 
 
 class ChatConsumer(WebsocketConsumer):
@@ -31,14 +31,14 @@ class ChatConsumer(WebsocketConsumer):
         print(text_data_json)
         message = text_data_json['message']
         s = text_data_json['sender']
-        r = text_data_json['receiver']
+        # r = text_data_json['receiver']
 
         sender = User.objects.get(username=s)
-        receiver = User.objects.get(id=r)
+        # receiver = User.objects.get(id=r)
 
         room, _ = Room.objects.get_or_create(room_name=self.room_name)
-        user_room, _ = UserRoom.objects.get_or_create(userprofile=sender.userprofile, room_name=room)
-        Message.objects.create(message=message, room=room, sender=sender, receiver_id=r)
+        # user_room, _ = UserRoom.objects.get_or_create(userprofile=sender.userprofile, room_name=room)
+        Message.objects.create(message=message, room=room, sender=sender)
 
         # Send message to room group
         async_to_sync(self.channel_layer.group_send)(
@@ -47,7 +47,7 @@ class ChatConsumer(WebsocketConsumer):
                 'type': 'chat_message',
                 'message': message,
                 'sender': sender.username,
-                'receiver': receiver.username,
+                # 'receiver': receiver.username,
                 'room_name': self.room_name,
             }
         )
@@ -56,13 +56,13 @@ class ChatConsumer(WebsocketConsumer):
     def chat_message(self, event):
         message = event['message']
         sender = event['sender']
-        receiver = event['receiver']
+        # receiver = event['receiver']
         room_name = event['room_name']
 
         # Send message to WebSocket
         self.send(text_data=json.dumps({
             'message': message,
             'sender': sender,
-            'receiver': receiver,
+            # 'receiver': receiver,
             'room_name': room_name,
         }))

@@ -1,10 +1,27 @@
 from rest_framework.serializers import ModelSerializer
 
-from app.models import Message
+from app.models import Message, Room
 
 
 class MessageSerializer(ModelSerializer):
     class Meta:
         model = Message
-        fields = ('message', 'room', 'sender', 'receiver', 'created')
+        fields = ('id', 'message', 'room', 'sender', 'created')
 
+
+class MessageUpdateSerializer(ModelSerializer):
+    class Meta:
+        model = Message
+        fields = ('id', 'message')
+
+
+class RoomSerializer(ModelSerializer):
+    class Meta:
+        model = Room
+        fields = ('id', 'room_name', 'userprofiles')
+
+
+class RoomUpdateSerializer(ModelSerializer):
+    class Meta:
+        model = Room
+        fields = ('id', 'room_name')

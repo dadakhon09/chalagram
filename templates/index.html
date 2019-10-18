@@ -18,7 +18,7 @@
 
 
     let sender = {{ sender }};
-    let receiver = {{ receiver }};
+
     let room_name = "{{ room_name }}";
 
     let chatSocket = new WebSocket(
@@ -45,7 +45,7 @@
             chatSocket.send(JSON.stringify({
                 'message': message,
                 'sender': sender,
-                'receiver': receiver,
+                {#'receiver': receiver,#}
                 'room_name': room_name,
             }));
         }

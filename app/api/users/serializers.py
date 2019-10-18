@@ -24,13 +24,13 @@ class FriendshipSerializer(ModelSerializer):
 
     class Meta:
         model = Friendship
-        fields = ('friends', )
+        fields = ('friend', )
 
 
 class FriendshipCreateSerializer(ModelSerializer):
     class Meta:
         model = Friendship
-        fields = ('friends', )
+        fields = ('friend', )
 
     def create(self, validated_data):
         f = Friendship.objects.create(userprofile=self.context['request'].user.userprofile, **validated_data)

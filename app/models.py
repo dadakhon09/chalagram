@@ -22,6 +22,7 @@ def wtf(sender, instance, created, **kwargs):
 
 class Room(models.Model):
     room_name = models.CharField(max_length=255, unique=True, null=True, blank=True)
+    userprofiles = models.ManyToManyField(UserProfile, related_name='userprofiles')
     created = models.DateTimeField(auto_now_add=True)
 
     class Meta:
@@ -36,7 +37,7 @@ class Message(models.Model):
     message = models.TextField()
     room = models.ForeignKey(Room, on_delete=models.CASCADE, null=True, blank=True)
     sender = models.ForeignKey(User, related_name='sender', on_delete=models.CASCADE)
-    receiver = models.ForeignKey(User, related_name='receiver', on_delete=models.CASCADE)
+    # receiver = models.ForeignKey(User, related_name='receiver', on_delete=models.CASCADE)
     created = models.DateTimeField(auto_now_add=True)
 
     class Meta:
@@ -47,21 +48,21 @@ class Message(models.Model):
         return self.message
 
 
-class UserRoom(models.Model):
-    userprofile = models.ForeignKey(UserProfile, on_delete=models.CASCADE)
-    room_name = models.ForeignKey(Room, on_delete=models.CASCADE)
-
-    class Meta:
-        ordering = ['id']
-        db_table = 'user_rooms'
-
-    def __str__(self):
-        return self.room_name.room_name
+# class UserRoom(models.Model):
+#     userprofile = models.ForeignKey(UserProfile, on_delete=models.CASCADE)
+#     room_name = models.ForeignKey(Room, on_delete=models.CASCADE)
+#
+#     class Meta:
+#         ordering = ['id']
+#         db_table = 'user_rooms'
+#
+#     def __str__(self):
+#         return self.room_name.room_name
 
 
 class Friendship(models.Model):
     userprofile = models.ForeignKey(UserProfile, on_delete=models.CASCADE)
-    friends = models.ForeignKey(UserProfile, on_delete=models.CASCADE, related_name='friends')
+    friend = models.ForeignKey(UserProfile, on_delete=models.CASCADE, related_name='friend')
     created = models.DateTimeField(auto_now_add=True)
 
     class Meta:
@@ -69,4 +70,4 @@ class Friendship(models.Model):
         db_table = 'friendship'
 
     def __str__(self):
-        return f'{self.userprofile}<->{self.friends}'
+        return f'{self.userprofile}<->{self.friend}'
