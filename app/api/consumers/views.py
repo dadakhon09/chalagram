@@ -28,13 +28,16 @@ class MyRoomsList(ListAPIView):
     serializer_class = RoomSerializer
 
     def get_queryset(self):
-    	qs = Room.objects.all()
-    	user = self.request.user
-    	for room in qs:
-    		for u in room.get_usernames():
-    			if u == user.username:
-    				print('yess')
-    	return qs
+        qs = Room.objects.all()
+        user = self.request.user
+
+        list = Room.objects.filter(id=-1)
+
+        for room in qs:
+            for u in room.get_usernames():
+                if u == user.username:
+                    list |= Room.objects.filter(room_name=room.room_name)
+        return list
 
 
 class CreateRoom(APIView):
@@ -52,7 +55,7 @@ class CreateRoom(APIView):
             userprofiles_list |= UserProfile.objects.filter(user__username=u)
             room.userprofiles.add(UserProfile.objects.filter(user__username=u).first())
             room.save()
-
+        userprofiles_list |= UserProfile.objects.filter(user__username=self.request.user.username)
         ser = UserProfileSerializer(userprofiles_list, many=True)
 
         response = {'users': ser.data, 'room_name': room_name}

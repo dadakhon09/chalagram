@@ -3,7 +3,7 @@ from django.urls import path
 from app.api.consumers.views import MessagesList, CreateRoom, MessageUpdate, MessageDelete, RoomUpdate, RoomDelete, \
     RoomsList, MyRoomsList
 from app.api.users.views import UserRegister, UserLogin, UserLogout, UserListAll, UserListExceptOne, FriendsList, \
-    AddFriend
+    AddFriend, UserUpdate, UserDelete, UserDetail
 
 urlpatterns = [
     path('register/', UserRegister.as_view(), name='register'),
@@ -12,6 +12,9 @@ urlpatterns = [
 
     path('users/list/', UserListAll.as_view(), name='users-list'),
     path('users/my/', UserListExceptOne.as_view(), name='users-my'),
+    path('users/list/<int:user_id>/', UserDetail.as_view(), name='user-detail'),
+    path('users/list/<int:user_id>/update/', UserUpdate.as_view(), name='user-update'),
+    path('users/list/<int:user_id>/delete/', UserDelete.as_view(), name='user-delete'),
     path('friends/list/', FriendsList.as_view(), name='friend-list'),
     path('add/friend/', AddFriend.as_view(), name='add-friend'),
     path('messages/list/<str:room_name>/', MessagesList.as_view(), name='messages-list'),

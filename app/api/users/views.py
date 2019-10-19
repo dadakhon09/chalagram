@@ -2,7 +2,8 @@ from django.contrib.auth import authenticate
 from rest_framework.authtoken.models import Token
 from django.contrib.auth.models import User
 from rest_framework.decorators import permission_classes
-from rest_framework.generics import ListAPIView, CreateAPIView
+from rest_framework.generics import ListAPIView, CreateAPIView, RetrieveUpdateAPIView, RetrieveDestroyAPIView, \
+    RetrieveAPIView
 from rest_framework.permissions import IsAdminUser, AllowAny, IsAuthenticated
 from rest_framework.response import Response
 from rest_framework.views import APIView
@@ -57,6 +58,30 @@ class UserLogout(APIView):
 class UserListAll(ListAPIView):
     serializer_class = UserProfileSerializer
     queryset = UserProfile.objects.all()
+
+
+class UserUpdate(RetrieveUpdateAPIView):
+    lookup_field = 'user_id'
+    serializer_class = UserProfileSerializer
+
+    def get_queryset(self):
+        return UserProfile.objects.filter(user__id=self.kwargs['user_id'])
+
+
+class UserDelete(RetrieveDestroyAPIView):
+    lookup_field = 'user_id'
+    serializer_class = UserProfileSerializer
+
+    def get_queryset(self):
+        return UserProfile.objects.filter(user__id=self.kwargs['user_id'])
+
+
+class UserDetail(RetrieveAPIView):
+    lookup_field = 'user_id'
+    serializer_class = UserProfileSerializer
+
+    def get_queryset(self):
+        return UserProfile.objects.filter(user__id=self.kwargs['user_id'])
 
 
 class UserListExceptOne(ListAPIView):
