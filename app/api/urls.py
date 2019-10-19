@@ -1,7 +1,7 @@
 from django.urls import path
 
 from app.api.consumers.views import MessagesList, CreateRoom, MessageUpdate, MessageDelete, RoomUpdate, RoomDelete, \
-    RoomsList, ChatList
+    RoomsList, MyRoomsList
 from app.api.users.views import UserRegister, UserLogin, UserLogout, UserListAll, UserListExceptOne, FriendsList, \
     AddFriend
 
@@ -21,5 +21,5 @@ urlpatterns = [
     path('rooms/list/', RoomsList.as_view(), name='rooms-list'),
     path('rooms/list/<int:id>/update/', RoomUpdate.as_view(), name='room-update'),
     path('rooms/list/<int:id>/delete/', RoomDelete.as_view(), name='room-delete'),
-    path('chat/list/my/', ChatList.as_view(), name='my-chat-list'),
+    path('rooms/list/my/', MyRoomsList.as_view(), name='my-rooms-list'),
 ]

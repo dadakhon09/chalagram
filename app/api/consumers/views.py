@@ -24,6 +24,19 @@ class RoomsList(ListAPIView):
     queryset = Room.objects.all()
 
 
+class MyRoomsList(ListAPIView):
+    serializer_class = RoomSerializer
+
+    def get_queryset(self):
+    	qs = Room.objects.all()
+    	user = self.request.user
+    	for room in qs:
+    		for u in room.get_usernames():
+    			if u == user.username:
+    				print('yess')
+    	return qs
+
+
 class CreateRoom(APIView):
     def post(self, request):
         data = request.data
@@ -70,12 +83,3 @@ class RoomDelete(RetrieveDestroyAPIView):
     lookup_field = 'id'
     queryset = Room.objects.all()
 
-
-class ChatList(ListAPIView):
-    serializer_class = RoomSerializer
-
-    def get_queryset(self):
-        rooms = Room.objects.all()
-        for room in rooms:
-            print(room.userprofiles)
-        return Room.objects.filter()

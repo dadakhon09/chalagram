@@ -25,6 +25,9 @@ class Room(models.Model):
     userprofiles = models.ManyToManyField(UserProfile, related_name='userprofiles')
     created = models.DateTimeField(auto_now_add=True)
 
+    def get_usernames(self):
+        return [u.user.username for u in self.userprofiles.all()]
+
     class Meta:
         ordering = ['id']
         db_table = 'rooms'
