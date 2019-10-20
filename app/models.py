@@ -7,7 +7,7 @@ from django.dispatch import receiver
 
 class UserProfile(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE)
-    photo = models.ImageField(upload_to='', null=True, blank=True)
+    photo = models.ImageField(default='profile-pictures.png', upload_to='', null=True, blank=True)
 
     def __str__(self):
         return self.user.username
@@ -37,7 +37,7 @@ class Room(models.Model):
 
 
 class Message(models.Model):
-    message = models.TextField()
+    message = models.TextField(blank=True, null=True)
     room = models.ForeignKey(Room, on_delete=models.CASCADE, null=True, blank=True)
     sender = models.ForeignKey(User, related_name='sender', on_delete=models.CASCADE)
     # receiver = models.ForeignKey(User, related_name='receiver', on_delete=models.CASCADE)
@@ -50,6 +50,17 @@ class Message(models.Model):
     def __str__(self):
         return self.message
 
+
+class File(models.Model):
+    file = models.FileField(upload_to='', blank=True, null=True)
+    message = models.ForeignKey(Message, on_delete=models.CASCADE, null=True, blank=True)
+
+    class Meta:
+        ordering = ['id']
+        db_table = 'files'
+
+    def __str__(self):
+        return self.file.name
 
 # class UserRoom(models.Model):
 #     userprofile = models.ForeignKey(UserProfile, on_delete=models.CASCADE)

@@ -18,6 +18,21 @@ class UserProfileSerializer(ModelSerializer):
         fields = ('user', 'photo')
 
 
+class UserProfilePhotoSerializer(ModelSerializer):
+    class Meta:
+        model = UserProfile
+        fields = ('photo', )
+    #
+    # def update(self, instance, validated_data):
+    #     print(validated_data)
+    #     # username = validated_data.pop('username')
+    #     # photo = validated_data.pop('photo')
+    #     # instance.user.username = username
+    #     # instance.photo = photo
+    #     # instance.save()
+    #     return instance
+
+
 class FriendshipSerializer(ModelSerializer):
     # userprofile = UserProfileSerializer()
     friends = UserProfileSerializer()

@@ -8,7 +8,8 @@ from rest_framework.permissions import IsAdminUser, AllowAny, IsAuthenticated
 from rest_framework.response import Response
 from rest_framework.views import APIView
 
-from app.api.users.serializers import UserProfileSerializer, FriendshipSerializer, FriendshipCreateSerializer
+from app.api.users.serializers import UserProfileSerializer, FriendshipSerializer, FriendshipCreateSerializer, \
+    UserProfilePhotoSerializer, UserSerializer
 from app.models import UserProfile, Friendship
 
 
@@ -60,12 +61,20 @@ class UserListAll(ListAPIView):
     queryset = UserProfile.objects.all()
 
 
-class UserUpdate(RetrieveUpdateAPIView):
+class EditPhoto(RetrieveUpdateAPIView):
     lookup_field = 'user_id'
-    serializer_class = UserProfileSerializer
+    serializer_class = UserProfilePhotoSerializer
 
     def get_queryset(self):
         return UserProfile.objects.filter(user__id=self.kwargs['user_id'])
+
+
+class UserUpdate(RetrieveUpdateAPIView):
+    lookup_field = 'id'
+    serializer_class = UserSerializer
+
+    def get_queryset(self):
+        return User.objects.filter(id=self.kwargs['id'])
 
 
 class UserDelete(RetrieveDestroyAPIView):
