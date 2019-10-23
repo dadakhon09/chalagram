@@ -22,6 +22,7 @@ def wtf(sender, instance, created, **kwargs):
 
 class Room(models.Model):
     room_name = models.CharField(max_length=255, unique=True, null=True, blank=True)
+    room_uid = models.CharField(max_length=127, unique=True, null=True, blank=True)
     userprofiles = models.ManyToManyField(UserProfile, related_name='userprofiles')
     created = models.DateTimeField(auto_now_add=True)
 
