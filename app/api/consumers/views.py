@@ -1,7 +1,6 @@
 from datetime import datetime
 
-from rest_framework.generics import ListAPIView, CreateAPIView, UpdateAPIView, DestroyAPIView, RetrieveDestroyAPIView, \
-    RetrieveUpdateAPIView
+from rest_framework.generics import ListAPIView, RetrieveDestroyAPIView, RetrieveUpdateAPIView
 from rest_framework.response import Response
 from rest_framework.views import APIView
 
@@ -12,34 +11,34 @@ from app.models import Message, Room, UserProfile
 
 
 def get_uid(self, room):
-        today = datetime.today()
-        day = today.day
-        month = today.month
-        year = today.year
-        weekday = today.strftime('%A')
-        id = '%03d' % room.id
-        r = room.room_name[0].upper()
+    today = datetime.today()
+    day = today.day
+    month = today.month
+    year = today.year
+    weekday = today.strftime('%A')
+    id = '%03d' % room.id
+    r = room.room_name[0].upper()
 
-        if weekday == 'Monday':
-            w = 'A'
-        elif weekday == 'Tuesday':
-            w = 'B'
-        elif weekday == 'Wednesday':
-            w = 'C'
-        elif weekday == 'Thursday':
-            w = 'D'
-        elif weekday == 'Friday':
-            w = 'E'
-        elif weekday is 'Saturday':
-            w = 'F'
-        elif weekday is 'Sunday':
-            w = 'G'
-        else:
-            w = 'W'
+    if weekday == 'Monday':
+        w = 'A'
+    elif weekday == 'Tuesday':
+        w = 'B'
+    elif weekday == 'Wednesday':
+        w = 'C'
+    elif weekday == 'Thursday':
+        w = 'D'
+    elif weekday == 'Friday':
+        w = 'E'
+    elif weekday is 'Saturday':
+        w = 'F'
+    elif weekday is 'Sunday':
+        w = 'G'
+    else:
+        w = 'W'
 
-        uid = str(year)[3] + str(month) + w + str(day) + str(r) + str(id)
+    uid = str(year)[3] + str(month) + w + str(day) + str(r) + str(id)
 
-        return uid
+    return uid
 
 
 class MessagesList(ListAPIView):
