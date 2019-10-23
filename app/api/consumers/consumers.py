@@ -3,6 +3,7 @@ from channels.generic.websocket import WebsocketConsumer
 import json
 
 from django.contrib.auth.models import User
+from rest_framework.response import Response
 
 from app.models import Message, Room
 
@@ -29,8 +30,15 @@ class ChatConsumer(WebsocketConsumer):
     def receive(self, text_data):
         text_data_json = json.loads(text_data)
         print(text_data_json)
-        message = text_data_json['message']
-        s = text_data_json['sender']
+        message = text_data_json.get('message')
+        if text_data_json.get('sender'):
+            s = text_data_json.get('sender')
+        else:
+            return Response('Sorry, who is sending that?')
+
+        if text_data_json.get('file'):
+            pass
+
         # r = text_data_json['receiver']
 
         sender = User.objects.get(username=s)
