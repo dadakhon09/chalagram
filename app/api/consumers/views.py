@@ -1,4 +1,5 @@
-from django.core.serializers import serialize
+from datetime import datetime
+
 from rest_framework.generics import ListAPIView, CreateAPIView, UpdateAPIView, DestroyAPIView, RetrieveDestroyAPIView, \
     RetrieveUpdateAPIView
 from rest_framework.response import Response
@@ -8,6 +9,37 @@ from app.api.consumers.serializers import MessageSerializer, MessageUpdateSerial
     RoomSerializer
 from app.api.users.serializers import UserProfileSerializer
 from app.models import Message, Room, UserProfile
+
+
+def get_uid(self, room):
+        today = datetime.today()
+        day = today.day
+        month = today.month
+        year = today.year
+        weekday = today.strftime('%A')
+        id = '%03d' % room.id
+        r = room.room_name[0].upper()
+
+        if weekday == 'Monday':
+            w = 'A'
+        elif weekday == 'Tuesday':
+            w = 'B'
+        elif weekday == 'Wednesday':
+            w = 'C'
+        elif weekday == 'Thursday':
+            w = 'D'
+        elif weekday == 'Friday':
+            w = 'E'
+        elif weekday is 'Saturday':
+            w = 'F'
+        elif weekday is 'Sunday':
+            w = 'G'
+        else:
+            w = 'W'
+
+        uid = str(year)[3] + str(month) + w + str(day) + str(r) + str(id)
+
+        return uid
 
 
 class MessagesList(ListAPIView):
@@ -31,24 +63,32 @@ class MyRoomsList(ListAPIView):
         qs = Room.objects.all()
         user = self.request.user
 
-        list = Room.objects.filter(id=-1)
+        r_list = Room.objects.filter(id=-1)
 
         for room in qs:
             for u in room.get_usernames():
                 if u == user.username:
-                    list |= Room.objects.filter(room_name=room.room_name)
-        return list
+                    r_list |= Room.objects.filter(room_name=room.room_name)
+        return r_list
 
 
 class CreateRoom(APIView):
     def post(self, request):
-        data = request.data
-
         userprofiles_list = UserProfile.objects.filter(id=-1)
 
         users = self.request.POST.getlist('user')
-        room_name = self.request.POST.get('room_name')
+
+        if len(users) == 1:
+            room_name = self.request.user.username + '+' + users[0]
+        elif self.request.POST.get('room_name'):
+            room_name = self.request.POST.get('room_name')
+        else:
+            room_name = 'room'
+
         room = Room(room_name=room_name)
+        room.save()
+
+        room.room_uid = get_uid(self, room)
         room.save()
 
         for u in users:
@@ -85,4 +125,3 @@ class RoomDelete(RetrieveDestroyAPIView):
     serializer_class = RoomSerializer
     lookup_field = 'id'
     queryset = Room.objects.all()
-
