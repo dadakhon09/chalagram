@@ -93,13 +93,6 @@ class UserDetail(RetrieveAPIView):
         return UserProfile.objects.filter(user__id=self.kwargs['user_id'])
 
 
-class UserListExceptOne(ListAPIView):
-    serializer_class = UserProfileSerializer
-
-    def get_queryset(self):
-        return UserProfile.objects.exclude(user__id=self.request.user.id)
-
-
 class FriendsList(ListAPIView):
     serializer_class = FriendshipSerializer
 
