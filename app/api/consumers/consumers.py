@@ -5,7 +5,8 @@ import json
 from django.contrib.auth.models import User
 from rest_framework.response import Response
 
-from app.models import Message, Room
+from app.api.consumers.serializers import FilesSerializer
+from app.models import Message, Room, File
 
 
 class ChatConsumer(WebsocketConsumer):
@@ -31,13 +32,11 @@ class ChatConsumer(WebsocketConsumer):
         text_data_json = json.loads(text_data)
         print(text_data_json)
         message = text_data_json.get('message')
+
         if text_data_json.get('sender'):
             s = text_data_json.get('sender')
         else:
             return Response('Sorry, who is sending that?')
-
-        if text_data_json.get('file'):
-            pass
 
         # r = text_data_json['receiver']
 
@@ -46,7 +45,16 @@ class ChatConsumer(WebsocketConsumer):
 
         room, _ = Room.objects.get_or_create(room_name=self.room_name)
         # user_room, _ = UserRoom.objects.get_or_create(userprofile=sender.userprofile, room_name=room)
-        Message.objects.create(message=message, room=room, sender=sender)
+        m = Message.objects.create(message=message, room=room, sender=sender)
+
+        files = File.objects.filter(id=-1)
+        ser = FilesSerializer(files)
+
+        if text_data_json.get('files'):
+            for f in text_data_json.get('files'):
+                file = File.objects.create(file=f, message=m)
+                files |= file
+                ser = FilesSerializer(files, many=True)
 
         # Send message to room group
         async_to_sync(self.channel_layer.group_send)(
@@ -57,6 +65,7 @@ class ChatConsumer(WebsocketConsumer):
                 'sender': sender.username,
                 # 'receiver': receiver.username,
                 'room_name': self.room_name,
+                'files': ser.data,
             }
         )
 
@@ -66,6 +75,7 @@ class ChatConsumer(WebsocketConsumer):
         sender = event['sender']
         # receiver = event['receiver']
         room_name = event['room_name']
+        files = event['files']
 
         # Send message to WebSocket
         self.send(text_data=json.dumps({
@@ -73,4 +83,5 @@ class ChatConsumer(WebsocketConsumer):
             'sender': sender,
             # 'receiver': receiver,
             'room_name': room_name,
+            'files': files,
         }))

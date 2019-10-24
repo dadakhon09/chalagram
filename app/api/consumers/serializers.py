@@ -1,6 +1,6 @@
 from rest_framework.serializers import ModelSerializer
 
-from app.models import Message, Room
+from app.models import Message, Room, File
 
 
 class MessageSerializer(ModelSerializer):
@@ -25,3 +25,9 @@ class RoomUpdateSerializer(ModelSerializer):
     class Meta:
         model = Room
         fields = ('id', 'room_name')
+
+
+class FilesSerializer(ModelSerializer):
+    class Meta:
+        model = File
+        fields = ('file', )
